@@ -25,6 +25,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_VISION_API_KEY: ${{ secrets.VISION_API_KEY }}
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
