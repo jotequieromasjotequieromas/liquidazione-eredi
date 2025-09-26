@@ -20,8 +20,20 @@ jobs:
           node-version: '20'
 
       # Usiamo "npm install" perché non hai package-lock.json
-      - name: Install dependencies
-        run: npm install
+      - name: NPM network hardening
+        run: |
+          npm config set registry "https://registry.npmjs.org/"
+          npm config set fetch-retries 5
+          npm config set fetch-retry-maxtimeout 120000
+          npm config set fetch-timeout 120000
+
+      - name: Install dependencies (with retry)
+        run: |
+          for i in 1 2 3 4 5; do
+            npm install --no-audit --no-fund --prefer-offline && break
+            echo "npm install failed. Retry $i/5 in 10s..."
+            sleep 10
+          done
 
       - name: Build
         run: npm run build
